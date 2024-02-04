@@ -7,13 +7,18 @@ const {
   compare_password,
 } = require("../../modules/authentication/auth.js");
 
+async function getAuthUsrnamePwd(auth_header) {
+  var encodedUsrPwd = auth_header.split(" ")[1];
+  var decodedUsrPwd = Buffer.from(encodedUsrPwd, "base64").toString();
+  var username = decodedUsrPwd.split(":")[0];
+  var password = decodedUsrPwd.split(":")[1];
+  return { username, password };
+}
+
 const get = async (req, res) => {
   const auth_check = req.headers.authorization;
   if (auth_check && auth_check.includes("Basic")) {
-    var encodedUsrPwd = auth_check.split(" ")[1];
-    var decodedUsrPwd = Buffer.from(encodedUsrPwd, "base64").toString();
-    var username = decodedUsrPwd.split(":")[0];
-    var password = decodedUsrPwd.split(":")[1];
+    const { username, password } = await getAuthUsrnamePwd(auth_check);
     const userDetail = await User.findOne({
       where: { username: username },
     });
@@ -61,6 +66,45 @@ const post = async (req, res) => {
   }
 };
 
-const put = async (req, res) => {};
+const put = async (req, res) => {
+  const auth_check = req.headers.authorization;
+  if (auth_check && auth_check.includes("Basic")) {
+    const { username, password } = await getAuthUsrnamePwd(auth_check);
+    const userDetail = await User.findOne({
+      where: { username: username },
+    });
+    const isPwdExists = userDetail
+      ? await compare_password(password, userDetail.password)
+      : false;
+
+    if (isPwdExists) {
+      const contentType = req.get("Content-Type");
+      if (contentType === "application/json") {
+        const data = jsonValidator.validate(req.body, userSchema);
+        if (data.valid == true && username === req.body.username) {
+          const hashed_pwd = await hash_password(req.body.password);
+          await User.update(
+            {
+              first_name: req.body.first_name,
+              last_name: req.body.last_name,
+              username: username,
+              password: hashed_pwd,
+            },
+            {
+              where: {
+                username: username,
+              },
+            }
+          );
+          res.status(204).send();
+        }
+      }
+      res.status(400).send();
+      return;
+    }
+  }
+  res.status(401).send();
+  return;
+};
 
 module.exports = { get, post, put };

@@ -83,19 +83,13 @@ const put = async (req, res) => {
         const data = jsonValidator.validate(req.body, userSchema);
         if (data.valid == true && username === req.body.username) {
           const hashed_pwd = await hash_password(req.body.password);
-          await User.update(
-            {
-              first_name: req.body.first_name,
-              last_name: req.body.last_name,
-              username: username,
-              password: hashed_pwd,
-            },
-            {
-              where: {
-                username: username,
-              },
-            }
-          );
+          userDetail.set({
+            first_name: req.body.first_name,
+            last_name: req.body.last_name,
+            username: username,
+            password: hashed_pwd,
+          });
+          await userDetail.save();
           res.status(204).send();
         }
       }

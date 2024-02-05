@@ -73,11 +73,11 @@ const put = async (req, res) => {
     const userDetail = await User.findOne({
       where: { username: username },
     });
-    const isPwdExists = userDetail
+    const isPwdExist = userDetail
       ? await compare_password(password, userDetail.password)
       : false;
 
-    if (isPwdExists) {
+    if (isPwdExist) {
       const contentType = req.get("Content-Type");
       if (contentType === "application/json") {
         const data = jsonValidator.validate(req.body, userSchema);
@@ -106,6 +106,5 @@ const put = async (req, res) => {
   res.status(401).send();
   return;
 };
-
 
 module.exports = { get, post, put };

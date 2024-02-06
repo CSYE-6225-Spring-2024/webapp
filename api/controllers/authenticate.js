@@ -17,6 +17,10 @@ async function getAuthUsrnamePwd(auth_header) {
   return { username, password };
 }
 
+const head = async (req, res) => {
+  res.status(405).send();
+};
+
 const get = async (req, res) => {
   try {
     await syncing(req, res);
@@ -46,30 +50,25 @@ const get = async (req, res) => {
 };
 
 const post = async (req, res) => {
-  await syncing(req, res);
-  const contentType = req.get("Content-Type");
-  if (contentType === "application/json") {
+  try {
+    await syncing(req, res);
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
-      res.status(400).send();
+      res.status(400).send("Invalid data provided");
       return;
     }
-    try {
-      const hashed_pwd = await hash_password(req.body.password);
-      const new_user = await User.create({
-        first_name: req.body.first_name,
-        last_name: req.body.last_name,
-        username: req.body.username,
-        password: hashed_pwd,
-      });
-      const {
-        dataValues: { password, ...userWithoutPwd },
-      } = new_user;
-      res.status(201).send(userWithoutPwd);
-    } catch (error) {
-      res.status(400).send();
-    }
-  } else {
+    const hashed_pwd = await hash_password(req.body.password);
+    const new_user = await User.create({
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+      username: req.body.username,
+      password: hashed_pwd,
+    });
+    const {
+      dataValues: { password, ...userWithoutPwd },
+    } = new_user;
+    res.status(201).send(userWithoutPwd);
+  } catch (error) {
     res.status(400).send();
   }
 };
@@ -112,4 +111,8 @@ const put = async (req, res) => {
   }
 };
 
-module.exports = { get, post, put };
+const all = async (req, res) => {
+  res.status(405).send();
+};
+
+module.exports = { get, post, put, all, head};

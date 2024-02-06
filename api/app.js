@@ -18,6 +18,23 @@ app.use((req, res, next) => {
   next();
 });
 
-routes(app);
+app.use((req, res, next) => {
+  const contentType = req.get("Content-Type");
+  if (contentType && contentType !== "application/json") {
+    res.status(400).send();
+    return;
+  }
+
+  if (Object.keys(req.query).length != 0) {
+    res.status(400).send();
+    return;
+  }
+  next();
+});
+
+app.use((req, res, next) => {
+  routes(app);
+  next();
+});
 
 module.exports = app;

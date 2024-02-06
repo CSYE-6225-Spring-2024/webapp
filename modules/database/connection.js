@@ -1,7 +1,12 @@
 const { Sequelize } = require("sequelize");
+require("dotenv").config();
+
 const sequelize = new Sequelize(
-  "postgres://user:cloud_2024@localhost:5432/test_database",
+  process.env.DB_NAME || "test_database",
+  process.env.DB_USER || "user",
+  process.env.DB_PWD || "cloud_2024",
   {
+    host: "localhost",
     dialect: "postgres",
   }
 );

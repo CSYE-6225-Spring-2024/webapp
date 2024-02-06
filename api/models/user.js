@@ -40,8 +40,23 @@ const User = sq.define(
   }
 );
 
-User.sync({ force: true }).then(() => {
-  console.log("Model: User Synced");
-});
+User.sync({})
+  .then(() => {
+    console.log("Model: User Synced");
+  })
+  .catch((error) => {
+    console.error("Error syncing User Model");
+  });
 
-module.exports = { User };
+async function syncing(req, res) {
+  User.sync({})
+    .then(() => {
+      console.log("Model: User Synced");
+    })
+    .catch((error) => {
+      console.error("Error syncing User Model");
+      res.status(503).send();
+    });
+}
+
+module.exports = { User, syncing };

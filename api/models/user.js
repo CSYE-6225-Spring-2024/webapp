@@ -56,6 +56,7 @@ async function syncing(req, res) {
     .catch((error) => {
       console.error("Error syncing User Model");
       res.status(503).send();
+      return;
     });
 }
 

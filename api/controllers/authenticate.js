@@ -23,6 +23,10 @@ const head = async (req, res) => {
 
 const get = async (req, res) => {
   try {
+    if (Object.keys(req.body).length > 0) {
+      res.status(400).send();
+      return;
+    }
     await syncing(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {
@@ -87,18 +91,15 @@ const put = async (req, res) => {
         : false;
 
       if (isPwdExist) {
-        const contentType = req.get("Content-Type");
-        if (contentType === "application/json") {
-          const data = jsonValidator.validate(req.body, updateSchema);
-          if (data.valid == true) {
-            if (req.body.password != null) {
-              var hashed_pwd = await hash_password(req.body.password);
-              req.body.password = hashed_pwd;
-            }
-            userDetail.set(req.body);
-            await userDetail.save();
-            res.status(204).send();
+        const data = jsonValidator.validate(req.body, updateSchema);
+        if (data.valid == true) {
+          if (req.body.password != null) {
+            var hashed_pwd = await hash_password(req.body.password);
+            req.body.password = hashed_pwd;
           }
+          userDetail.set(req.body);
+          await userDetail.save();
+          res.status(204).send();
         }
         res.status(400).send();
         return;
@@ -115,4 +116,4 @@ const all = async (req, res) => {
   res.status(405).send();
 };
 
-module.exports = { get, post, put, all, head};
+module.exports = { get, post, put, all, head };

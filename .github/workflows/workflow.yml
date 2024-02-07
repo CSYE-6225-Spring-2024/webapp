@@ -23,3 +23,5 @@ jobs:
           node-version: 18.x
       - name: Install & Compile Dependencies
         run: npm install
+      - name: Run Tests
+        run: npm test

@@ -79,6 +79,10 @@ const post = async (req, res) => {
 
 const put = async (req, res) => {
   try {
+    if (Object.keys(req.body).length == 0) {
+      res.status(400).send();
+      return;
+    }
     await syncing(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {

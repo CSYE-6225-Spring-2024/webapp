@@ -6,9 +6,22 @@ https://spring2024.csye6225.cloud/assignments/02/
 
 ### Build & Deploy Instructions
 
+#### On Local
+
 1. npm install
 2. brew services start postgresql
 3. brew services stop postgresql
+
+#### CentOS 8
+
+1. ssh root@104.248.122.189
+2. sudo dnf module enable postgresql:16
+3. sudo dnf install postgresql-server
+4. sudo systemctl start postgresql
+5. sudo systemctl enable postgresql
+6. sudo dnf module install nodejs:18/common
+7. scp -r /Users/anirbandutta/Desktop/src/webapp-1.zip root@104.248.122.189:/root/src
+8. curl -v -XPOST "http://localhost:8080/healthz"
 
 ### Reference Links
 

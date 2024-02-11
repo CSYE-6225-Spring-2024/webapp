@@ -11,9 +11,9 @@ jobs:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: test_database
-          POSTGRES_USER: anirban
-          POSTGRES_PASSWORD: cloud_2024
+          POSTGRES_DB: ${{ vars.DB_NAME }}
+          POSTGRES_USER: ${{ vars.DB_USER }}
+          POSTGRES_PASSWORD: ${{ secrets.DB_PWD }}
         options: >-
           --health-cmd pg_isready 
           --health-interval 10s 
@@ -33,6 +33,6 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          DB_USER: anirban
-          DB_PWD: cloud_2024
-          DB_NAME: test_database
+          DB_USER: ${{ vars.DB_USER }}
+          DB_PWD: ${{ secrets.DB_PWD }}
+          DB_NAME: ${{ vars.DB_NAME }}

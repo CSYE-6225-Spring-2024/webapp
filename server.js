@@ -4,3 +4,11 @@ const server = app.listen(8080, function () {
 });
 
 module.exports = { server, app };
+
+async function syncing(req, res) {
+  try {
+    await User.sync({ force: true });
+  } catch (err) {
+    console.error("Error syncing User Model");
+  }
+}

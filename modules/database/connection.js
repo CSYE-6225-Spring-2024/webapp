@@ -8,7 +8,18 @@ const sequelize = new Sequelize(
   {
     host: "localhost",
     dialect: "postgres",
+    logging: false,
   }
 );
 
-module.exports = { sq: sequelize };
+async function checkConnection(req, res) {
+  sequelize
+    .authenticate()
+    .then(() => {})
+    .catch(() => {
+      res.status(503).send();
+      return;
+    });
+}
+
+module.exports = { sq: sequelize, checkConnection };

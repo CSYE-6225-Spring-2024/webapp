@@ -1,8 +1,13 @@
 var express = require("express");
 var routes = require("./routes/index.js");
 const bodyParser = require("body-parser");
+const { syncDatabase } = require("../api/models/user.js");
 
 const app = express();
+
+//Sync models with database
+syncDatabase();
+
 app.use(bodyParser.json());
 app.use(
   bodyParser.urlencoded({

@@ -18,7 +18,7 @@ async function checkConnection(req, res) {
     .then(() => {})
     .catch((error) => {
       res.status(503).send();
-      console.log(error);
+      console.log("from check connection", error);
       return;
     });
 }

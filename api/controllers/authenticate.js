@@ -77,7 +77,7 @@ const post = async (req, res) => {
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     res.status(400).send();
-    console.log(error);
+    console.log("inside post", error);
   }
 };
 

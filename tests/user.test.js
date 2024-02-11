@@ -6,6 +6,10 @@ describe("User creation and check duplication", () => {
   let userId;
   let encodedStr;
 
+  beforeAll(async () => {
+    await User.sync();
+  });
+
   afterAll(async () => {
     await User.destroy({ where: {} });
   });

@@ -1,10 +1,14 @@
 const request = require("supertest");
 const app = require("../api/app.js");
-const { User } = require("../api/models/user.js");
+const { User, syncDatabase } = require("../api/models/user.js");
 
 describe("User creation and check duplication", () => {
   let userId;
   let encodedStr;
+
+  beforeAll(async () => {
+    await syncDatabase();
+  });
 
   afterAll(async () => {
     await User.destroy({ where: {} });

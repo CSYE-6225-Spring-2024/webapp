@@ -28,7 +28,7 @@ const get = async (req, res) => {
       res.status(400).send();
       return;
     }
-    await checkConnection(req, res);
+    //await checkConnection(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {
       const { username, password } = await getAuthUsrnamePwd(auth_check);
@@ -57,7 +57,7 @@ const get = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    await checkConnection(req, res);
+    //await checkConnection(req, res);
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
       res.status(400).send("Invalid data provided");
@@ -87,7 +87,7 @@ const put = async (req, res) => {
       res.status(400).send();
       return;
     }
-    await checkConnection(req, res);
+    //await checkConnection(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {
       const { username, password } = await getAuthUsrnamePwd(auth_check);

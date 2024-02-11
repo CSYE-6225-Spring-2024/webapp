@@ -6,16 +6,13 @@ on:
       - synchronize
     branches:
       - main
-
 permissions:
   checks: write
   actions: read
   contents: read
-
 jobs:
   user-tests:
     runs-on: ubuntu-latest
-
     services:
       postgres:
         image: postgres
@@ -23,20 +20,15 @@ jobs:
           POSTGRES_DB: $DB_NAME
           POSTGRES_USER: $DB_USER
           POSTGRES_PASSWORD: $ {{ secrets.DB_PWD}}
-        options: >-
-          --health-cmd pg_isready
-          --health-interval 10s
-          --health-timeout 5s
+        options:
+          --health-cmd pg_isready --health-interval 10s --health-timeout 5s
           --health-retries 5
         ports:
           - 5432:5432
-
     steps:
       - name: Checkout repository code
         uses: actions/checkout@v4
-
       - name: Install Dependencies
         uses: npm ci
-
       - name: Run tests
         uses: npm test

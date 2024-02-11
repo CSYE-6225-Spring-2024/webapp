@@ -8,7 +8,6 @@ const {
   hash_password,
   compare_password,
 } = require("../../modules/authentication/auth.js");
-const { syncing } = require("../models/user.js");
 
 async function getAuthUsrnamePwd(auth_header) {
   var encodedUsrPwd = auth_header.split(" ")[1];
@@ -51,7 +50,6 @@ const get = async (req, res) => {
     return;
   } catch (error) {
     res.status(400).send();
-    console.log(error);
   }
 };
 
@@ -61,7 +59,6 @@ const post = async (req, res) => {
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
       res.status(400).send("Invalid data provided");
-      console.log("error incorrect data");
       return;
     }
     const hashed_pwd = await hash_password(req.body.password);
@@ -77,7 +74,6 @@ const post = async (req, res) => {
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     res.status(400).send();
-    console.log("inside post", error);
   }
 };
 

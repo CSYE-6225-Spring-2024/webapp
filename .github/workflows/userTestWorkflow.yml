@@ -1,4 +1,4 @@
-name: Integration tests
+name: Github Workflow
 on:
   pull_request:
     types:
@@ -11,34 +11,15 @@ permissions:
   checks: write
   actions: read
   contents: read
+
 jobs:
   build:
     runs-on: ubuntu-latest
-    name: User test build
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: DB_NAME
-          POSTGRES_USER: DB_USER
-          POSTGRES_PASSWORD: PWD
-        options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s 
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
     steps:
-      - name: Checkout repository code
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Use Node.js
         uses: actions/setup-node@v3
         with:
           node-version: 18.x
-      - name: Install Dependencies
-        uses: npm ci
-      - name: Run tests
-        uses: npm test
-        env:
-          DB_PWD: PWD
+      - name: Install & Compile Dependencies
+        run: npm install

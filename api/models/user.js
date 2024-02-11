@@ -2,7 +2,7 @@ const { sq } = require("../../modules/database/connection.js");
 const { DataTypes } = require("sequelize");
 
 const User = sq.define(
-  "user",
+  "user_records",
   {
     id: {
       type: DataTypes.UUID,

@@ -1,13 +1,14 @@
 const request = require("supertest");
 const app = require("../api/app.js");
 const { User, syncDatabase } = require("../api/models/user.js");
+const { checkDbisUp } = require("../modules/database/connection.js");
 
 describe("User creation and check duplication", () => {
   let userId;
   let encodedStr;
 
   beforeAll(async () => {
-    await syncDatabase();
+    await checkDbisUp();
   });
 
   afterAll(async () => {

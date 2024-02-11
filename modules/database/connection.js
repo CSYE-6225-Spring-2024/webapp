@@ -12,6 +12,10 @@ const sequelize = new Sequelize(
   }
 );
 
+const checkDbisUp = async () => {
+  await sequelize.authenticate();
+};
+
 async function checkConnection(req, res) {
   sequelize
     .authenticate()
@@ -23,4 +27,4 @@ async function checkConnection(req, res) {
     });
 }
 
-module.exports = { sq: sequelize, checkConnection };
+module.exports = { sq: sequelize, checkConnection, checkDbisUp };

@@ -2,12 +2,12 @@ const { User } = require("../models/user.js");
 const updateSchema = require("../../modules/schema/update_user.json");
 const jsonValidator = require("jsonschema");
 const userSchema = require("../../modules/schema/user.json");
+const { checkConnection } = require("../../modules/database/connection.js");
 
 const {
   hash_password,
   compare_password,
 } = require("../../modules/authentication/auth.js");
-const { syncing } = require("../models/user.js");
 
 async function getAuthUsrnamePwd(auth_header) {
   var encodedUsrPwd = auth_header.split(" ")[1];
@@ -27,7 +27,7 @@ const get = async (req, res) => {
       res.status(400).send();
       return;
     }
-    await syncing(req, res);
+    await checkConnection(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {
       const { username, password } = await getAuthUsrnamePwd(auth_check);
@@ -55,7 +55,7 @@ const get = async (req, res) => {
 
 const post = async (req, res) => {
   try {
-    await syncing(req, res);
+    await checkConnection(req, res);
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
       res.status(400).send("Invalid data provided");
@@ -83,7 +83,7 @@ const put = async (req, res) => {
       res.status(400).send();
       return;
     }
-    await syncing(req, res);
+    await checkConnection(req, res);
     const auth_check = req.headers.authorization;
     if (auth_check && auth_check.includes("Basic")) {
       const { username, password } = await getAuthUsrnamePwd(auth_check);

@@ -2,7 +2,7 @@ const { sq } = require("../../modules/database/connection.js");
 const { DataTypes } = require("sequelize");
 
 const User = sq.define(
-  "user",
+  "user_records",
   {
     id: {
       type: DataTypes.UUID,
@@ -40,24 +40,13 @@ const User = sq.define(
   }
 );
 
-User.sync({})
-  .then(() => {
-    console.log("Model: User Synced");
-  })
-  .catch((error) => {
-    console.error("Error syncing User Model");
-  });
-
-async function syncing(req, res) {
-  User.sync({})
-    .then(() => {
-      console.log("Model: User Synced");
-    })
-    .catch((error) => {
-      console.error("Error syncing User Model");
-      res.status(503).send();
-      return;
-    });
+async function syncDatabase() {
+  try {
+    await User.sync();
+    console.log("Model Synced");
+  } catch (error) {
+    console.error("Error syncing User Model", error);
+  }
 }
 
-module.exports = { User, syncing };
+module.exports = { User, syncDatabase };

@@ -33,6 +33,6 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          DB_USER: user
+          DB_USER: ${{ env.DB_USER }}
           DB_PWD: cloud_2024
           DB_NAME: test_database

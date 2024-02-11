@@ -61,6 +61,7 @@ const post = async (req, res) => {
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
       res.status(400).send("Invalid data provided");
+      console.log("error incorrect data");
       return;
     }
     const hashed_pwd = await hash_password(req.body.password);
@@ -76,6 +77,7 @@ const post = async (req, res) => {
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     res.status(400).send();
+    console.log(error);
   }
 };
 

@@ -16,8 +16,9 @@ async function checkConnection(req, res) {
   sequelize
     .authenticate()
     .then(() => {})
-    .catch(() => {
+    .catch((error) => {
       res.status(503).send();
+      console.log(error);
       return;
     });
 }

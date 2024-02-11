@@ -19,7 +19,7 @@ jobs:
         env:
           POSTGRES_DB: $DB_NAME
           POSTGRES_USER: $DB_USER
-          POSTGRES_PASSWORD: ${{ secrets.DB_PWD}}
+          POSTGRES_PASSWORD: bunni987
         options: >-
           --health-cmd pg_isready 
           --health-interval 10s 
@@ -39,4 +39,6 @@ jobs:
       - name: Run tests
         run: npm test
         env:
-          DB_PWD: ${{ secrets.DB_PWD}}
+          DB_USER: $DB_USER
+          DB_PWD: bunni987
+          DB_NAME: $DB_NAME

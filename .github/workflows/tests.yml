@@ -6,12 +6,13 @@ on:
       - synchronize
     branches:
       - main
+
 permissions:
   checks: write
   actions: read
   contents: read
 jobs:
-  user-tests:
+  build:
     runs-on: ubuntu-latest
     name: User test build
     services:

@@ -43,7 +43,7 @@ const User = sq.define(
 async function syncDatabase() {
   try {
     await User.sync();
-    console.log("Synced");
+    console.log("Model Synced");
   } catch (error) {
     console.error("Error syncing User Model", error);
   }

@@ -12,8 +12,15 @@ const sequelize = new Sequelize(
   }
 );
 
-const checkDbisUp = async () => {
-  await sequelize.authenticate();
+const checkDBStatus = async () => {
+  await sequelize
+    .authenticate()
+    .then(() => {
+      console.log("Database is running");
+    })
+    .catch((error) => {
+      console.log("Database failed to run", error);
+    });
 };
 
 async function checkConnection(req, res) {
@@ -27,4 +34,4 @@ async function checkConnection(req, res) {
     });
 }
 
-module.exports = { sq: sequelize, checkConnection, checkDbisUp };
+module.exports = { sq: sequelize, checkConnection, checkDBStatus };

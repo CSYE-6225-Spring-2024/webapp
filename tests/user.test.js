@@ -6,8 +6,8 @@ describe("User creation and check duplication", () => {
   let userId;
   let encodedStr;
 
-  beforeAll(async () => {
-    await User.destroy({ where: {}, truncate: true });
+  afterAll(async () => {
+    await User.destroy({ where: {} });
   });
 
   test("Create user and get details", async () => {

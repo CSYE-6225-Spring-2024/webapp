@@ -13,13 +13,14 @@ permissions:
 jobs:
   user-tests:
     runs-on: ubuntu-latest
+    name: User test build
     services:
       postgres:
         image: postgres
         env:
-          POSTGRES_DB: $DB_NAME
-          POSTGRES_USER: $DB_USER
-          POSTGRES_PASSWORD: ${{ secrets.DB_PWD}}
+          POSTGRES_DB: DB_NAME
+          POSTGRES_USER: DB_USER
+          POSTGRES_PASSWORD: PWD
         options: >-
           --health-cmd pg_isready 
           --health-interval 10s 
@@ -28,8 +29,6 @@ jobs:
         ports:
           - 5432:5432
     steps:
-      - name: Waiting for postgres to be ready
-        uses: dockerize -wait tcp://localhost:5432 -timeout 1m
       - name: Checkout repository code
         uses: actions/checkout@v4
       - name: Use Node.js
@@ -40,3 +39,5 @@ jobs:
         uses: npm ci
       - name: Run tests
         uses: npm test
+        env:
+          DB_PWD: PWD

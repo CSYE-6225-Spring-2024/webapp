@@ -1,16 +1,13 @@
-# webapp
-
-## Assignment 02
-
-https://spring2024.csye6225.cloud/assignments/02/
+## Web-App
 
 ### Build & Deploy Instructions
 
 #### On Local
 
 1. npm install
-2. brew services start postgresql
-3. brew services stop postgresql
+2. node server.js (startup file)
+3. brew services start postgresql
+4. brew services stop postgresql
 
 #### CentOS 8
 
@@ -22,6 +19,11 @@ https://spring2024.csye6225.cloud/assignments/02/
 6. sudo dnf module install nodejs:18/common
 7. scp -r /Users/anirbandutta/Desktop/src/webapp-1.zip root@104.248.122.189:/root/src
 8. curl -v -XPOST "http://localhost:8080/healthz"
+
+### Github Workflows
+
+1. build.yaml : installs all the dependencies of node
+2. tests.yml : runs tests to create user, get details, and update them
 
 ### Reference Links
 

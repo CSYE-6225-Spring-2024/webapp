@@ -7,21 +7,12 @@ on:
 jobs:
   user-tests:
     runs-on: ubuntu-latest
-    services:
-      postgres:
-        image: postgres
-        env:
-          POSTGRES_DB: ${{ vars.DB_NAME }}
-          POSTGRES_USER: ${{ vars.DB_USER }}
-          POSTGRES_PASSWORD: ${{ secrets.DB_PWD }}
-        options: >-
-          --health-cmd pg_isready 
-          --health-interval 10s 
-          --health-timeout 5s
-          --health-retries 5
-        ports:
-          - 5432:5432
     steps:
+      - name: Start Postgres and Create Dependencies
+        run: |
+          sudo systemctl start postgresql
+          sudo -u postgres psql -c "CREATE USER ${{ vars.DB_USER }} WITH PASSWORD '${{ secrets.DB_PWD }}';"
+          sudo -u postgres psql -c "CREATE DATABASE ${{ vars.DB_NAME }} WITH OWNER ${{ vars.DB_USER }};"
       - name: Checkout repository code
         uses: actions/checkout@v4
       - name: Use Node.js

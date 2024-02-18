@@ -1,0 +1,29 @@
+name: Packer Validate
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  validatePacker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+      - name: Run `packer init`
+        run: |
+          cd packer-setup/builds
+          "packer init build.pkr.hcl"
+      - name: Run `packer validate`
+        run: |
+          "packer validate build.pkr.hcl"

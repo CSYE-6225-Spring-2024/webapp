@@ -45,7 +45,7 @@ build {
   }
 
   provisioner "file" {
-    source = "../systemd/csye6225.service"
+    source      = "../systemd/csye6225.service"
     destination = "/tmp/"
   }
 

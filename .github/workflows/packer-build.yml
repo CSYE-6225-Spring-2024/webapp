@@ -35,4 +35,6 @@ jobs:
           cd packer-setup/builds
           packer init build.pkr.hcl
       - name: Build packer Image
-        run: packer build build.pkr.hcl
+        run: |
+          cd packer-setup/builds
+          packer build build.pkr.hcl

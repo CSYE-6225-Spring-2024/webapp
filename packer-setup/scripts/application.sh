@@ -1,12 +1,10 @@
 #!/bin/bash
-sudo mkdir /opt/cloud
+sudo mkdir /opt/webapp
 
-sudo unzip /tmp/webapp.zip -d /opt/cloud
+sudo unzip /tmp/webapp.zip -d /opt/webapp
 
-cd /opt/cloud || exit 
+sudo chown csye6225:csye6225 /opt/webapp -R
 
-sudo chown csye6225:csye6225 webapp-main -R
-
-cd webapp-main || exit
+cd /opt/webapp || exit 
 
 sudo npm install

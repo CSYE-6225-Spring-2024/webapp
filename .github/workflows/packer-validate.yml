@@ -23,7 +23,7 @@ jobs:
       - name: Run `packer init`
         run: |
           cd packer-setup/builds
-          "packer init build.pkr.hcl"
+          packer init build.pkr.hcl
       - name: Run `packer validate`
         run: |
-          "packer validate build.pkr.hcl"
+          packer validate build.pkr.hcl

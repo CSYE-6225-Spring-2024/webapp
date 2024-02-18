@@ -29,6 +29,11 @@ jobs:
         run: |
           cd packer-setup/builds
           packer init build.pkr.hcl
+      - name: Run `packer fmt`
+        run: |
+          cd packer-setup/builds
+          packer fmt build.pkr.hcl
+          git diff --exit-code build.pkr.hcl
       - name: Run `packer validate`
         run: |
           cd packer-setup/builds

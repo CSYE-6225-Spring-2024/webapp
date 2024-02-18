@@ -1,0 +1,40 @@
+name: Packer Validate
+on:
+  pull_request:
+    types:
+      - opened
+      - synchronize
+    branches:
+      - main
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  validatePacker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+      - name: Zip repository
+        run: |
+          zip -r webapp.zip .
+          mv webapp.zip packer-setup/builds
+        shell: bash
+      - name: Run `packer init`
+        run: |
+          cd packer-setup/builds
+          packer init build.pkr.hcl
+      - name: Run `packer fmt`
+        run: |
+          cd packer-setup/builds
+          packer fmt build.pkr.hcl
+          git diff --exit-code build.pkr.hcl
+      - name: Run `packer validate`
+        run: |
+          cd packer-setup/builds
+          packer validate build.pkr.hcl

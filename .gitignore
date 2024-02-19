@@ -131,3 +131,13 @@ dist
 
 # mac users
 .DS_Store
+
+#packer related
+*.iso
+*.ova
+*.vmdk
+*.vdi
+*.vhd
+packer_cache/
+*.box
+*.log

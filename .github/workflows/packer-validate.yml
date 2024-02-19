@@ -32,9 +32,10 @@ jobs:
       - name: Run `packer fmt`
         run: |
           cd packer-setup/builds
-          packer fmt build.pkr.hcl
+          packer fmt .
           git diff --exit-code build.pkr.hcl
+          git diff --exit-code variables.pkrvars.hcl
       - name: Run `packer validate`
         run: |
           cd packer-setup/builds
-          packer validate build.pkr.hcl
+          packer validate .

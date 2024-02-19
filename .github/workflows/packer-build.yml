@@ -37,4 +37,4 @@ jobs:
       - name: Build packer Image
         run: |
           cd packer-setup/builds
-          packer build build.pkr.hcl
+          packer build -var-file="variables.pkrvars.hcl" build.pkr.hcl

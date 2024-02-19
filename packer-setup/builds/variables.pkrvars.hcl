@@ -1,0 +1,10 @@
+image_description       = "Webapp image made by packer"
+project_id              = "csye6225-anirban-002979520"
+source_image_family     = "centos-stream-8"
+zone                    = "us-east1-b"
+disk_size               = 20
+disk_type               = "pd-standard"
+image_name              = "webapp-vm-image-{{timestamp}}"
+image_family            = "csye6225"
+image_storage_locations = ["us"]
+ssh_username            = "packer"

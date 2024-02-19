@@ -10,7 +10,7 @@ jobs:
     steps:
       - name: Start Postgres and Create Dependencies
         run: |
-          sudo systemctl start postgresql
+          sudo systemctl stop postgresql
           sudo -u postgres psql -c "CREATE USER ${{ vars.DB_USER }} WITH PASSWORD '${{ secrets.DB_PWD }}';"
           sudo -u postgres psql -c "CREATE DATABASE ${{ vars.DB_NAME }} WITH OWNER ${{ vars.DB_USER }};"
       - name: Checkout repository code

@@ -10,7 +10,7 @@ on:
 
 jobs:
   user-tests:
-    if: (github.event.pull_request.merged == true)|| (github.event.action == 'opened')
+    if: (github.event.pull_request.merged == true)|| (github.event.action == 'opened') || (github.event.action == 'synchronize')
     runs-on: ubuntu-latest
     steps:
       - name: Start Postgres and Create Dependencies

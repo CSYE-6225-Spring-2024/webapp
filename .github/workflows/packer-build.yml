@@ -6,6 +6,12 @@ on:
     branches:
       - main
 
+env:
+  DB_USER: ${{ vars.DB_USER }}
+  DB_PWD: ${{ secrets.DB_PWD }}
+  DB_NAME: ${{ vars.DB_NAME }}
+  DB_PORT: ${{ vars.DB_PORT }}
+
 permissions:
   checks: write
   actions: read

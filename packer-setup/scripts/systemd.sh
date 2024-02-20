@@ -6,3 +6,5 @@ sudo systemctl daemon-reload
 
 sudo systemctl start csye6225
 sudo systemctl enable csye6225.service
+
+sleep 5m

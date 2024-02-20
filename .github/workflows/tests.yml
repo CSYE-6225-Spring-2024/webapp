@@ -1,11 +1,15 @@
 name: Integration tests
 on:
   pull_request:
+    types:
+      - closed
+      - opened
     branches:
       - main
 
 jobs:
   user-tests:
+    if: (github.event.pull_request.merged == true )|| (github.event.pull_request.opened == true)
     runs-on: ubuntu-latest
     steps:
       - name: Start Postgres and Create Dependencies

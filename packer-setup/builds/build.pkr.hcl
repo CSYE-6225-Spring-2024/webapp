@@ -10,25 +10,25 @@ packer {
 variable "image_description" {
   type        = string
   description = "providing image description"
-  default     = "test"
+  default     = "Webapp image made by packer"
 }
 
 variable "project_id" {
   type        = string
   description = "Project ID of GCP"
-  default     = env("PROJECT_ID")
+  default     = env("PKR_PROJECT_ID")
 }
 
 variable "source_image_family" {
   type        = string
   description = "Name of source image family"
-  default     = "test"
+  default     = env("PKR_SOURCE_IMG_FAM")
 }
 
 variable "zone" {
   type        = string
   description = "Zone info to provide GCP"
-  default     = "test"
+  default     = env("PKR_ZONE")
 }
 
 variable "disk_size" {
@@ -40,31 +40,31 @@ variable "disk_size" {
 variable "disk_type" {
   type        = string
   description = "Disk type of image provisioned"
-  default     = "test"
+  default     = "pd-standard"
 }
 
 variable "image_name" {
   type        = string
   description = "Image name"
-  default     = "test"
+  default     = "webapp-vm-image-{{timestamp}}"
 }
 
 variable "image_family" {
   type        = string
   description = "Image family name"
-  default     = "test"
+  default     = "csye6225"
 }
 
 variable "image_storage_locations" {
   type        = list(string)
   description = "Image geographic locations"
-  default     = ["test"]
+  default     = ["us"]
 }
 
 variable "ssh_username" {
   type        = string
   description = "ssh_username"
-  default     = "test"
+  default     = env("PKR_SSH_USERNAME")
 }
 
 variable "dbname" {

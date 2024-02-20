@@ -16,7 +16,7 @@ variable "image_description" {
 variable "project_id" {
   type        = string
   description = "Project ID of GCP"
-  default     = "test"
+  default     = env("PROJECT_ID")
 }
 
 variable "source_image_family" {
@@ -67,6 +67,30 @@ variable "ssh_username" {
   default     = "test"
 }
 
+variable "dbname" {
+  type        = string
+  description = "DB-NAME"
+  default     = env("DB_NAME")
+}
+
+variable "dbuser" {
+  type        = string
+  description = "DB-USER"
+  default     = env("DB_USER")
+}
+
+variable "dbpwd" {
+  type        = string
+  description = "DB-PWD"
+  default     = env("DB_PWD")
+}
+
+variable "dbport" {
+  type        = number
+  description = "DB-PORT"
+  default     = env("DB_PORT")
+}
+
 source "googlecompute" "webapp-vm-image" {
   image_description       = var.image_description
   project_id              = var.project_id
@@ -84,6 +108,12 @@ build {
   sources = ["sources.googlecompute.webapp-vm-image"]
 
   provisioner "shell" {
+    environment_vars = [
+      "DB_USER=${var.dbuser}",
+      "DB_NAME=${var.dbname}",
+      "DB_PWD=${var.dbpwd}",
+      "DB_PORT=${var.dbport}"
+    ]
     scripts = [
       # "../scripts/upgrades.sh",
       "../scripts/user.sh",
@@ -98,6 +128,13 @@ build {
   }
 
   provisioner "shell" {
+    environment_vars = [
+      "DB_USER=${var.dbuser}",
+      "DB_NAME=${var.dbname}",
+      "DB_PWD=${var.dbpwd}",
+      "DB_PORT=${var.dbport}"
+    ]
+
     scripts = [
       "../scripts/application.sh"
     ]

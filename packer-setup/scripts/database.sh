@@ -8,5 +8,5 @@ sudo sed -i 's/host    all             all             ::1\/128                 
 sudo systemctl start postgresql
 sudo systemctl enable postgresql
 
-sudo -u postgres psql -c "CREATE USER anirban WITH PASSWORD 'cloud_2024';"
-sudo -u postgres psql -c "CREATE DATABASE cloud_db WITH OWNER anirban;"
+sudo -u postgres psql -c "CREATE USER ${DB_USER} WITH PASSWORD '${DB_PWD}';"
+sudo -u postgres psql -c "CREATE DATABASE ${DB_NAME} WITH OWNER ${DB_USER};"

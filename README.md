@@ -23,7 +23,7 @@
 ### Github Workflow
 
 1. build.yaml : installs all the dependencies of node
-2. tests.yml : runs tests to create user, get details, and update them
+2. tests.yml : runs tests to create user, get details, and update them. Runs on PR raised and PR merged
 
 ### Reference Links
 

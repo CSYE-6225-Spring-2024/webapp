@@ -4,9 +4,6 @@ ConditionPathExists=/opt/webapp
 After=network.target
 
 [Service]
-Environment=DB_USER=anirban
-Environment=DB_PWD=cloud_2024
-Environment=DB_NAME=test_database
 WorkingDirectory=/opt/webapp/
 ExecStart=/usr/bin/node server.js
 Restart=always

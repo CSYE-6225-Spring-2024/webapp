@@ -23,7 +23,7 @@ jobs:
       PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}
       PKR_SOURCE_IMG_FAM: ${{ vars.PKR_SOURCE_IMG_FAM }}
       PKR_SSH_USERNAME: ${{ vars.PKR_SSH_USERNAME }}
-      PKR_ZONE: $ {{ vars.PKR_ZONE }}
+      PKR_ZONE: ${{ vars.PKR_ZONE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

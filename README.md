@@ -20,7 +20,7 @@
 7. `scp -r /Users/anirbandutta/Desktop/src/webapp-1.zip root@104.248.122.189:/root/src`
 8. `curl -v -XPOST "http://localhost:8080/healthz"`
 
-### Github Workflows
+### Github Workflow
 
 1. build.yaml : installs all the dependencies of node
 2. tests.yml : runs tests to create user, get details, and update them

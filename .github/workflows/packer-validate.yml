@@ -15,6 +15,15 @@ permissions:
 jobs:
   validatePacker:
     runs-on: ubuntu-latest
+    env:
+      DB_USER: ${{ vars.DB_USER }}
+      DB_PWD: ${{ secrets.DB_PWD }}
+      DB_NAME: ${{ vars.DB_NAME }}
+      DB_PORT: ${{ vars.DB_PORT }}
+      PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}
+      PKR_SOURCE_IMG_FAM: ${{ vars.PKR_SOURCE_IMG_FAM }}
+      PKR_SSH_USERNAME: ${{ vars.PKR_SSH_USERNAME }}
+      PKR_ZONE: ${{ vars.PKR_ZONE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,7 +43,6 @@ jobs:
           cd packer-setup/builds
           packer fmt .
           git diff --exit-code build.pkr.hcl
-          git diff --exit-code variables.pkrvars.hcl
       - name: Run `packer validate`
         run: |
           cd packer-setup/builds

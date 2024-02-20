@@ -10,25 +10,25 @@ packer {
 variable "image_description" {
   type        = string
   description = "providing image description"
-  default     = "test"
+  default     = "Webapp image made by packer"
 }
 
 variable "project_id" {
   type        = string
   description = "Project ID of GCP"
-  default     = "test"
+  default     = env("PKR_PROJECT_ID")
 }
 
 variable "source_image_family" {
   type        = string
   description = "Name of source image family"
-  default     = "test"
+  default     = env("PKR_SOURCE_IMG_FAM")
 }
 
 variable "zone" {
   type        = string
   description = "Zone info to provide GCP"
-  default     = "test"
+  default     = env("PKR_ZONE")
 }
 
 variable "disk_size" {
@@ -40,31 +40,55 @@ variable "disk_size" {
 variable "disk_type" {
   type        = string
   description = "Disk type of image provisioned"
-  default     = "test"
+  default     = "pd-standard"
 }
 
 variable "image_name" {
   type        = string
   description = "Image name"
-  default     = "test"
+  default     = "webapp-vm-image-{{timestamp}}"
 }
 
 variable "image_family" {
   type        = string
   description = "Image family name"
-  default     = "test"
+  default     = "csye6225"
 }
 
 variable "image_storage_locations" {
   type        = list(string)
   description = "Image geographic locations"
-  default     = ["test"]
+  default     = ["us"]
 }
 
 variable "ssh_username" {
   type        = string
   description = "ssh_username"
-  default     = "test"
+  default     = env("PKR_SSH_USERNAME")
+}
+
+variable "dbname" {
+  type        = string
+  description = "DB-NAME"
+  default     = env("DB_NAME")
+}
+
+variable "dbuser" {
+  type        = string
+  description = "DB-USER"
+  default     = env("DB_USER")
+}
+
+variable "dbpwd" {
+  type        = string
+  description = "DB-PWD"
+  default     = env("DB_PWD")
+}
+
+variable "dbport" {
+  type        = number
+  description = "DB-PORT"
+  default     = env("DB_PORT")
 }
 
 source "googlecompute" "webapp-vm-image" {
@@ -84,8 +108,14 @@ build {
   sources = ["sources.googlecompute.webapp-vm-image"]
 
   provisioner "shell" {
+    environment_vars = [
+      "DB_USER=${var.dbuser}",
+      "DB_NAME=${var.dbname}",
+      "DB_PWD=${var.dbpwd}",
+      "DB_PORT=${var.dbport}"
+    ]
     scripts = [
-      "../scripts/upgrades.sh",
+      # "../scripts/upgrades.sh",
       "../scripts/user.sh",
       "../scripts/dependency.sh",
       "../scripts/database.sh",
@@ -98,6 +128,13 @@ build {
   }
 
   provisioner "shell" {
+    environment_vars = [
+      "DB_USER=${var.dbuser}",
+      "DB_NAME=${var.dbname}",
+      "DB_PWD=${var.dbpwd}",
+      "DB_PORT=${var.dbport}"
+    ]
+
     scripts = [
       "../scripts/application.sh"
     ]

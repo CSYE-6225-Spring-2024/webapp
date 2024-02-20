@@ -9,4 +9,4 @@ sudo systemctl start postgresql
 sudo systemctl enable postgresql
 
 sudo -u postgres psql -c "CREATE USER anirban WITH PASSWORD 'cloud_2024';"
-sudo -u postgres psql -c "CREATE DATABASE test_database WITH OWNER anirban;"
+sudo -u postgres psql -c "CREATE DATABASE cloud_db WITH OWNER anirban;"

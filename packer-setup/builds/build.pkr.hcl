@@ -34,13 +34,13 @@ variable "zone" {
 variable "disk_size" {
   type        = number
   description = "Disk size of image provisioned"
-  default     = 20
+  default     = env("PKR_DISK_SIZE")
 }
 
 variable "disk_type" {
   type        = string
   description = "Disk type of image provisioned"
-  default     = "pd-standard"
+  default     = env("PKR_DISK_TYPE")
 }
 
 variable "image_name" {
@@ -115,7 +115,7 @@ build {
       "DB_PORT=${var.dbport}"
     ]
     scripts = [
-      # "../scripts/upgrades.sh",
+      "../scripts/upgrades.sh",
       "../scripts/user.sh",
       "../scripts/dependency.sh",
       "../scripts/database.sh",

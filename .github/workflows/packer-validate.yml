@@ -24,6 +24,8 @@ jobs:
       PKR_SOURCE_IMG_FAM: ${{ vars.PKR_SOURCE_IMG_FAM }}
       PKR_SSH_USERNAME: ${{ vars.PKR_SSH_USERNAME }}
       PKR_ZONE: ${{ vars.PKR_ZONE }}
+      PKR_DISK_SIZE: ${{ vars.PKR_DISK_SIZE }}
+      PKR_DISK_TYPE: ${{ vars.PKR_DISK_TYPE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4

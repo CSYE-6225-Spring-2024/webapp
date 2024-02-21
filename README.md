@@ -20,10 +20,21 @@
 7. `scp -r /Users/anirbandutta/Desktop/src/webapp-1.zip root@104.248.122.189:/root/src`
 8. `curl -v -XPOST "http://localhost:8080/healthz"`
 
+#### Packer Machine Images
+
+1. `packer init file-name`
+2. `packer fmt file-name`
+3. `packer validate file-name`
+4. `packer build file-name`
+
+The machine image gets stored in Google cloud under project_name -> images
+
 ### Github Workflow
 
 1. build.yaml : installs all the dependencies of node
 2. tests.yml : runs tests to create user, get details, and update them. Runs on PR raised and PR merged
+3. packer-build.yml: builds machine image and stores in google cloud after PR is merged
+4. packer-validate.yml: runs packer fmt and packer validate on PR raised
 
 ### Reference Links
 

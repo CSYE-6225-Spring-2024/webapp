@@ -40,7 +40,7 @@ variable "disk_size" {
 variable "disk_type" {
   type        = string
   description = "Disk type of image provisioned"
-  default     = env("PKR_DISK_TYPEe")
+  default     = env("PKR_DISK_TYPE")
 }
 
 variable "image_name" {
@@ -93,7 +93,6 @@ variable "dbport" {
 
 source "googlecompute" "webapp-vm-image" {
   image_description       = var.image_description
-  project_id              = var.project_id
   source_image_family     = var.source_image_family
   zone                    = var.zone
   disk_size               = var.disk_size

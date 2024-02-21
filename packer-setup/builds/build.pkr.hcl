@@ -34,7 +34,7 @@ variable "zone" {
 variable "disk_size" {
   type        = number
   description = "Disk size of image provisioned"
-  default     = env("PKR_DISK_SIZE")
+  default= env("PKR_DISK_SIZE")
 }
 
 variable "disk_type" {

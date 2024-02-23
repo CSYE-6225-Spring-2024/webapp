@@ -1,12 +1,12 @@
 [Unit]
 Description=CSYE 6225 App
-ConditionPathExists=/opt/webapp/.env
 After=network.target
 
 [Service]
 WorkingDirectory=/opt/webapp/
 ExecStart=/usr/bin/node server.js
 Restart=always
+ExecStartPre=/bin/bash -c 'while [ ! -f /opt/webapp/.env ]; do sleep 1; done'
 RestartSec=2
 User=csye6225
 Group=csye6225

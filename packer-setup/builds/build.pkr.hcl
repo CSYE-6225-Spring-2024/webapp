@@ -115,10 +115,10 @@ build {
       "DB_PORT=${var.dbport}"
     ]
     scripts = [
-      "../scripts/upgrades.sh",
+      # "../scripts/upgrades.sh",
       "../scripts/user.sh",
       "../scripts/dependency.sh",
-      "../scripts/database.sh",
+      # "../scripts/database.sh",
     ]
   }
 

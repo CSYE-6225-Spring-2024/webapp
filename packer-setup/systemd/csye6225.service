@@ -1,12 +1,13 @@
 [Unit]
 Description=CSYE 6225 App
-ConditionPathExists=/opt/webapp
+ConditionPathExists=/opt/webapp/.env
 After=network.target
 
 [Service]
 WorkingDirectory=/opt/webapp/
 ExecStart=/usr/bin/node server.js
 Restart=always
+RestartSec=2
 User=csye6225
 Group=csye6225
 StandardOutput=syslog

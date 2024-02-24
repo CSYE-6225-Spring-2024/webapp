@@ -88,12 +88,11 @@ variable "dbpwd" {
 variable "dbport" {
   type        = number
   description = "DB-PORT"
-  default     = env("DB_PORT")
+  default     = env("DB_PORT"
 }
 
 source "googlecompute" "webapp-vm-image" {
   image_description       = var.image_description
-  project_id              = var.project_id
   source_image_family     = var.source_image_family
   zone                    = var.zone
   disk_size               = var.disk_size
@@ -101,7 +100,7 @@ source "googlecompute" "webapp-vm-image" {
   image_name              = var.image_name
   image_family            = var.image_family
   image_storage_locations = var.image_storage_locations
-  ssh_username            =           var.ssh_username
+  ssh_username            = var.ssh_username
 }
 
 build {

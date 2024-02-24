@@ -40,5 +40,4 @@ The machine image gets stored in Google cloud under project_name -> images
 
 1. https://docs.github.com/en/actions/automating-builds-and-tests/building-and-testing-nodejs
 2. https://gist.github.com/Chaser324/ce0505fbed06b947d962
-3. https://app.swaggerhub.com/apis-docs/csye6225-webapp/cloud-native-webapp/2024.spring.02#/
-4. https://www.npmjs.com/package/bcrypt
+3. https://www.npmjs.com/package/bcrypt

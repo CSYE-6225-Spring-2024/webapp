@@ -88,7 +88,7 @@ variable "dbpwd" {
 variable "dbport" {
   type        = number
   description = "DB-PORT"
-  default     = env("DB_PORT"
+  default     = env("DB_PORT")
 }
 
 source "googlecompute" "webapp-vm-image" {

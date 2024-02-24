@@ -101,7 +101,7 @@ source "googlecompute" "webapp-vm-image" {
   image_name              = var.image_name
   image_family            = var.image_family
   image_storage_locations = var.image_storage_locations
-  ssh_username            = var.ssh_username
+  ssh_username            =           var.ssh_username
 }
 
 build {

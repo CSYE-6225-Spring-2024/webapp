@@ -34,4 +34,4 @@ jobs:
           DB_NAME: ${{ vars.DB_NAME }}
           WEB_PORT: ${{ vars.WEB_PORT }}
           DB_HOST: ${{ vars.DB_HOST }}
-          DB_PORT: $${{ vars.DB_PORT }}
+          DB_PORT: ${{ vars.DB_PORT }}

@@ -6,7 +6,7 @@ const sequelize = new Sequelize(
   process.env.DB_USER || "user",
   process.env.DB_PWD || "cloud_2024",
   {
-    host: "localhost",
+    host: process.env.DB_HOST || "localhost",
     dialect: "postgres",
     logging: false,
   }

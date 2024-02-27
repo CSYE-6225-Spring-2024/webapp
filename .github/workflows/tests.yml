@@ -32,3 +32,5 @@ jobs:
           DB_USER: ${{ vars.DB_USER }}
           DB_PWD: ${{ secrets.DB_PWD }}
           DB_NAME: ${{ vars.DB_NAME }}
+          WEB_PORT: ${{ vars.WEB_PORT }}
+          DB_HOST: ${{ vars.DB_HOST }}

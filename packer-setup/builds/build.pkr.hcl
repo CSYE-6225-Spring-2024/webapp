@@ -85,7 +85,7 @@ build {
 
   provisioner "shell" {
     scripts = [
-      # "../scripts/upgrades.sh",
+      "../scripts/upgrades.sh",
       "../scripts/user.sh",
       "../scripts/dependency.sh",
     ]

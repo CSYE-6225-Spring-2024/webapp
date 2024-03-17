@@ -107,9 +107,15 @@ build {
     destination = "/tmp/"
   }
 
+  provisioner "file" {
+    source      = "../systemd/config.yaml"
+    destination = "/tmp/"
+  }
+
   provisioner "shell" {
     scripts = [
-      "../scripts/systemd.sh"
+      "../scripts/systemd.sh",
+      "../scripts/monitoring.sh",
     ]
   }
 }

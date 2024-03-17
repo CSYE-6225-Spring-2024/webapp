@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Run tests
-        run: npm test
+        run: sudo npm test
         env:
           DB_USER: ${{ vars.DB_USER }}
           DB_PWD: ${{ secrets.DB_PWD }}

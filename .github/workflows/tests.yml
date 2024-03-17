@@ -27,7 +27,7 @@ jobs:
       - name: Install Dependencies
         run: npm ci
       - name: Run tests
-        run: sudo npm test
+        run: npm test --unsafe-perm=true --allow-root
         env:
           DB_USER: ${{ vars.DB_USER }}
           DB_PWD: ${{ secrets.DB_PWD }}

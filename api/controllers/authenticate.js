@@ -3,6 +3,7 @@ const updateSchema = require("../../modules/schema/update_user.json");
 const jsonValidator = require("jsonschema");
 const userSchema = require("../../modules/schema/user.json");
 const { checkConnection } = require("../../modules/database/connection.js");
+const { logger } = require("../../modules/logger/logging.js");
 
 const {
   hash_password,
@@ -59,6 +60,9 @@ const post = async (req, res) => {
     const data = jsonValidator.validate(req.body, userSchema);
     if (data.valid != true) {
       res.status(400).send("Invalid data provided");
+      logger.info("POST REQ: Invalid data provided", {
+        username: req.body.username,
+      });
       return;
     }
     const hashed_pwd = await hash_password(req.body.password);
@@ -71,8 +75,15 @@ const post = async (req, res) => {
     const {
       dataValues: { password, ...userWithoutPwd },
     } = new_user;
+
+    logger.info("POST REQ: Successful adding of user", {
+      username: req.body.username,
+      first_name: req.body.first_name,
+      last_name: req.body.last_name,
+    });
     res.status(201).send(userWithoutPwd);
   } catch (error) {
+    logger.error("POST REQ: Bad request", { error: error.parent.detail });
     res.status(400).send();
   }
 };

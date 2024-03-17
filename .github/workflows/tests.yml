@@ -25,7 +25,12 @@ jobs:
         with:
           node-version: 18.x
       - name: Install Dependencies
-        run: npm ci
+        run: |
+          npm ci
+          sudo mkdir -p /var/log/webapp/
+          sudo chown -R runner /var/log/webapp/
+          sudo touch /var/log/webapp/webapp.log
+          sudo chown -R runner /var/log/webapp/webapp.log
       - name: Run tests
         run: npm test
         env:

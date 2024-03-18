@@ -1,5 +1,6 @@
 const { Sequelize } = require("sequelize");
 require("dotenv").config();
+const { logger } = require("../../modules/logger/logging.js");
 
 const sequelize = new Sequelize(
   process.env.DB_NAME,
@@ -18,9 +19,11 @@ const checkDBStatus = async () => {
     .authenticate()
     .then(() => {
       console.log("Database is running");
+      logger.info("Database Connection: Database is running");
     })
     .catch((error) => {
       console.log("Database failed to run", error);
+      logger.info("Database Connection: Database failed to run");
     });
 };
 

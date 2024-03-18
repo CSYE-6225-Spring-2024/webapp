@@ -1,5 +1,6 @@
 const { sq } = require("../../modules/database/connection.js");
 const { DataTypes } = require("sequelize");
+const { logger } = require("../../modules/logger/logging.js");
 
 const User = sq.define(
   "user_records",
@@ -44,8 +45,10 @@ async function syncDatabase() {
   try {
     await User.sync();
     console.log("Model Synced");
+    logger.info("Model Sync Database: Model Syncing");
   } catch (error) {
     console.error("Error syncing User Model", error);
+    logger.info("Model Sync Database: Error syncing User Model");
   }
 }
 

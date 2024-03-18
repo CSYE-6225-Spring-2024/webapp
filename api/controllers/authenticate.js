@@ -19,6 +19,7 @@ async function getAuthUsrnamePwd(auth_header) {
 }
 
 const head = async (req, res) => {
+  logger.info("HEAD REQ: method is not allowed");
   res.status(405).send();
 };
 
@@ -26,6 +27,7 @@ const get = async (req, res) => {
   try {
     if (Object.keys(req.body).length > 0) {
       res.status(400).send();
+      logger.info("GET REQ: Request body is not empty");
       return;
     }
     await checkConnection(req, res);
@@ -44,13 +46,18 @@ const get = async (req, res) => {
           dataValues: { password, ...userWithoutPwd },
         } = userDetail;
         res.status(200).send(userWithoutPwd);
+        logger.info("GET REQ: User information retrieved successfully", {
+          username: userWithoutPwd.username,
+        });
         return;
       }
     }
     res.status(401).send();
+    logger.info("GET REQ: Authentication check failed");
     return;
   } catch (error) {
     res.status(400).send();
+    logger.info("GET REQ: Bad Request", { error: error.parent.detail });
   }
 };
 
@@ -92,6 +99,7 @@ const put = async (req, res) => {
   try {
     if (Object.keys(req.body).length == 0) {
       res.status(400).send();
+      logger.info("PUT REQ: Request body is empty");
       return;
     }
     await checkConnection(req, res);
@@ -115,15 +123,19 @@ const put = async (req, res) => {
           userDetail.set(req.body);
           await userDetail.save();
           res.status(204).send();
+          logger.info("PUT REQ: Updation successful");
         }
+        logger.info("PUT REQ: Body is not valid");
         res.status(400).send();
         return;
       }
     }
     res.status(401).send();
+    logger.info("PUT REQ: Authorization failed");
     return;
   } catch (error) {
     res.status(400).send();
+    logger.info("PUT REQ: Bad request", { error: error.parent.detail });
   }
 };
 

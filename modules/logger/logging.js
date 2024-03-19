@@ -4,9 +4,14 @@ const logger = new winston.createLogger({
     winston.format.timestamp(),
     winston.format.json()
   ),
-  transports: [
-    new winston.transports.File({ filename: "/var/log/webapp/webapp.log" }),
-  ],
+  transports:
+    process.env.NODE_ENV == "PRODUCTION"
+      ? [
+          new winston.transports.File({
+            filename: "/var/log/webapp/webapp.log",
+          }),
+        ]
+      : [new winston.transports.Console()],
 });
 
 module.exports = {

@@ -57,7 +57,7 @@ const get = async (req, res) => {
     return;
   } catch (error) {
     res.status(400).send();
-    logger.info("GET REQ: Bad Request", { error: error.parent.detail });
+    logger.error("GET REQ: Bad Request", { error: error.parent.detail });
   }
 };
 
@@ -135,7 +135,7 @@ const put = async (req, res) => {
     return;
   } catch (error) {
     res.status(400).send();
-    logger.info("PUT REQ: Bad request", { error: error.parent.detail });
+    logger.error("PUT REQ: Bad request", { error: error.parent.detail });
   }
 };
 

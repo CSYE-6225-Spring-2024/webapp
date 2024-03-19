@@ -27,10 +27,6 @@ jobs:
       - name: Install Dependencies
         run: |
           npm ci
-          sudo mkdir -p /var/log/webapp/
-          sudo chown -R runner /var/log/webapp/
-          sudo touch /var/log/webapp/webapp.log
-          sudo chown -R runner /var/log/webapp/webapp.log
       - name: Run tests
         run: npm test
         env:
@@ -40,3 +36,4 @@ jobs:
           WEB_PORT: ${{ vars.WEB_PORT }}
           DB_HOST: ${{ vars.DB_HOST }}
           DB_PORT: ${{ vars.DB_PORT }}
+          NODE_ENV: ${{ vars.NODE_ENV }}

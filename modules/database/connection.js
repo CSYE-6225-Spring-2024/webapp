@@ -23,17 +23,19 @@ const checkDBStatus = async () => {
     })
     .catch((error) => {
       console.log("Database failed to run", error);
-      logger.info("Database Connection: Database failed to run");
+      logger.error("Database Connection: Database failed to run");
     });
 };
 
 async function checkConnection(req, res) {
   sequelize
     .authenticate()
-    .then(() => {})
+    .then(() => {
+      logger.debug("Debug message to check if database is running");
+    })
     .catch((error) => {
       res.status(503).send();
-      console.log("from check connection", error);
+      console.log("Check Connection", error);
       return;
     });
 }

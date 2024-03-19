@@ -19,7 +19,7 @@ async function getAuthUsrnamePwd(auth_header) {
 }
 
 const head = async (req, res) => {
-  logger.info("HEAD REQ: method is not allowed");
+  logger.warn("Request type NOT allowed", { method: req.method });
   res.status(405).send();
 };
 
@@ -52,12 +52,13 @@ const get = async (req, res) => {
         return;
       }
     }
+    logger.debug("Incorrect password or username provided by user");
     res.status(401).send();
     logger.info("GET REQ: Authentication check failed");
     return;
   } catch (error) {
     res.status(400).send();
-    logger.error("GET REQ: Bad Request", { error: error.parent.detail });
+    logger.error("GET REQ: Bad Request");
   }
 };
 
@@ -90,7 +91,7 @@ const post = async (req, res) => {
     });
     res.status(201).send(userWithoutPwd);
   } catch (error) {
-    logger.error("POST REQ: Bad request", { error: error.parent.detail });
+    logger.error("POST REQ: Bad request - Duplicate user");
     res.status(400).send();
   }
 };
@@ -131,16 +132,18 @@ const put = async (req, res) => {
         return;
       }
     }
+    logger.debug("Incorrect password or username provided by user");
     res.status(401).send();
     logger.info("PUT REQ: Authorization failed");
     return;
   } catch (error) {
     res.status(400).send();
-    logger.error("PUT REQ: Bad request", { error: error.parent.detail });
+    logger.error("PUT REQ: Bad request");
   }
 };
 
 const all = async (req, res) => {
+  logger.warn("Request type NOT allowed", { method: req.method });
   res.status(405).send();
 };
 

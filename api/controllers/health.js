@@ -3,6 +3,7 @@ const { logger } = require("../../modules/logger/logging.js");
 
 const head = async (req, res) => {
   res.status(405).send();
+  logger.warn("Request type NOT allowed", { method: req.method });
 };
 
 const get = async (req, res) => {
@@ -13,20 +14,21 @@ const get = async (req, res) => {
     sq.authenticate()
       .then(() => {
         res.send();
-        logger.info("Healthz Check Successful");
+        logger.info("GET REQ: Healthz Check Successful");
       })
       .catch(() => {
         res.status(503).send();
-        logger.info("Healthz Check Unsuccessful");
+        logger.info("GET REQ: Healthz Check Unsuccessful");
       });
   } else {
     res.status(400).send();
-    logger.info("Healthz: Bad Request");
+    logger.info("GET REQ: Healthz Bad Request - Body is not empty");
   }
 };
 
 const all = async (req, res) => {
   res.status(405).send();
+  logger.warn("Request type NOT allowed", { method: req.method });
 };
 
 module.exports = { get, head, all };

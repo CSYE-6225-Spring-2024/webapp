@@ -124,6 +124,7 @@ const put = async (req, res) => {
           await userDetail.save();
           res.status(204).send();
           logger.info("PUT REQ: Updation successful");
+          return;
         }
         logger.info("PUT REQ: Body is not valid");
         res.status(400).send();

@@ -4,6 +4,7 @@ const jsonValidator = require("jsonschema");
 const userSchema = require("../../modules/schema/user.json");
 const { checkConnection } = require("../../modules/database/connection.js");
 const { logger } = require("../../modules/logger/logging.js");
+const { publishMesssgePubSub } = require("../services/pubsub-gcp.js");
 
 const {
   hash_password,
@@ -89,6 +90,8 @@ const post = async (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
     });
+
+    await publishMesssgePubSub("verify_email", userWithoutPwd);
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     logger.error("POST REQ: Bad request - Duplicate user");

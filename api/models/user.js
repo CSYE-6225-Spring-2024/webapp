@@ -33,6 +33,11 @@ const User = sq.define(
       type: DataTypes.STRING,
       allowNull: false,
     },
+
+    verify: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+    },
   },
   {
     timestamps: true,

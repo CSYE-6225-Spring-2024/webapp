@@ -5,6 +5,7 @@ const userSchema = require("../../modules/schema/user.json");
 const { checkConnection } = require("../../modules/database/connection.js");
 const { logger } = require("../../modules/logger/logging.js");
 const { publishMesssgePubSub } = require("../services/pubsub-gcp.js");
+const jwt = require("jsonwebtoken");
 
 const {
   hash_password,
@@ -150,4 +151,53 @@ const all = async (req, res) => {
   res.status(405).send();
 };
 
-module.exports = { get, post, put, all, head };
+const verifyUser = async (req, res) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      logger.info("Token unavailable for the request");
+      res.status(401).send();
+      return;
+    }
+    const decodedValue = jwt.verify(token, "csye6225-webapp");
+    const currTime = Math.floor(Date.now() / 1000);
+    if (decodedValue.exp <= currTime) {
+      logger.info("The link is expired for username:", { username: username });
+      res.status(401).send();
+      return;
+    }
+
+    const username = decodedValue.username;
+    if (username) {
+      const userDetail = await User.findOne({
+        where: { username: username },
+      });
+      if (userDetail) {
+        await userDetail.update({ verify: true });
+        logger.info("Success in verifying the username", {
+          username: username,
+        });
+      } else {
+        logger.info("Failed to fetch user details using username", {
+          username: username,
+        });
+        res.status(401).send();
+        return;
+      }
+      res.status(200).send();
+      return;
+    } else {
+      logger.error("Username not available inside the jwt token");
+      res.status(401).send();
+      return;
+    }
+  } catch (error) {
+    logger.error(
+      "Token expired || Error in verifying the user || Invalid token sequence",
+      error
+    );
+    res.status(401).send();
+  }
+};
+
+module.exports = { get, post, put, all, head, verifyUser };

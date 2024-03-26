@@ -52,7 +52,7 @@ const get = async (req, res) => {
 
       if (isPwdExists) {
         const {
-          dataValues: { password, ...userWithoutPwd },
+          dataValues: { verify, password, ...userWithoutPwd },
         } = userDetail;
         res.status(200).send(userWithoutPwd);
         logger.info("GET REQ: User information retrieved successfully", {
@@ -90,7 +90,7 @@ const post = async (req, res) => {
       password: hashed_pwd,
     });
     const {
-      dataValues: { password, ...userWithoutPwd },
+      dataValues: { verify, password, ...userWithoutPwd },
     } = new_user;
 
     logger.info("POST REQ: Successful adding of user", {
@@ -99,7 +99,10 @@ const post = async (req, res) => {
       last_name: req.body.last_name,
     });
 
-    await publishMesssgePubSub("verify_email", userWithoutPwd);
+    if (process.env.NODE_ENV === "PRODUCTION") {
+      await publishMesssgePubSub("verify_email", userWithoutPwd);
+    }
+
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     logger.error("POST REQ: Bad request - Duplicate user");

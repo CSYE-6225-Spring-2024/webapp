@@ -1,9 +1,10 @@
-const { User } = require("../models/user.js");
+const { User, UserVerified } = require("../models/user.js");
 const updateSchema = require("../../modules/schema/update_user.json");
 const jsonValidator = require("jsonschema");
 const userSchema = require("../../modules/schema/user.json");
 const { checkConnection } = require("../../modules/database/connection.js");
 const { logger } = require("../../modules/logger/logging.js");
+const { publishMesssgePubSub } = require("../services/pubsub-gcp.js");
 
 const {
   hash_password,
@@ -37,6 +38,14 @@ const get = async (req, res) => {
       const userDetail = await User.findOne({
         where: { username: username },
       });
+      if (process.env.NODE_ENV == "PRODUCTION") {
+        const isVerified = await checkVerified(userDetail);
+        if (!isVerified) {
+          res.status(401).send();
+          logger.info("GET REQ: Request blocked as user not verified");
+          return;
+        }
+      }
       const isPwdExists = userDetail
         ? await compare_password(password, userDetail.password)
         : false;
@@ -89,6 +98,8 @@ const post = async (req, res) => {
       first_name: req.body.first_name,
       last_name: req.body.last_name,
     });
+
+    await publishMesssgePubSub("verify_email", userWithoutPwd);
     res.status(201).send(userWithoutPwd);
   } catch (error) {
     logger.error("POST REQ: Bad request - Duplicate user");
@@ -110,6 +121,14 @@ const put = async (req, res) => {
       const userDetail = await User.findOne({
         where: { username: username },
       });
+      if (process.env.NODE_ENV === "PRODUCTION") {
+        const isVerified = await checkVerified(userDetail);
+        if (!isVerified) {
+          res.status(401).send();
+          logger.info("PUT REQ: Request blocked as user not verified");
+          return;
+        }
+      }
       const isPwdExist = userDetail
         ? await compare_password(password, userDetail.password)
         : false;
@@ -147,4 +166,64 @@ const all = async (req, res) => {
   res.status(405).send();
 };
 
-module.exports = { get, post, put, all, head };
+const verifyUser = async (req, res) => {
+  try {
+    const token = req.query.token;
+    if (!token) {
+      logger.info("Token unavailable for the request");
+      res.status(401).send();
+      return;
+    }
+    const userDetail = await UserVerified.findOne({
+      where: { id: token },
+    });
+    const currTime = Math.floor(Date.now() / 1000);
+    const email_time = Math.floor(userDetail.email_sent_time / 1000);
+    const diffTime = currTime - email_time;
+    if (diffTime >= process.env.EMAIL_EXPIRY * 60) {
+      logger.info("The link is expired for username:", {
+        username: userDetail.username,
+      });
+      res.status(401).send();
+      return;
+    }
+
+    const username = userDetail.username;
+    if (username) {
+      const user = await User.findOne({
+        where: { username: username },
+      });
+      if (user) {
+        await user.update({ verify: true });
+        logger.info("Success in verifying the username", {
+          username: username,
+        });
+        await userDetail.update({ email_verified_time: currTime });
+      } else {
+        logger.info("Failed to fetch user details using username", {
+          username: username,
+        });
+        res.status(401).send();
+        return;
+      }
+      res.status(200).send();
+      return;
+    } else {
+      logger.error("Username not available in DB via token");
+      res.status(401).send();
+      return;
+    }
+  } catch (error) {
+    logger.error(
+      "Token expired || Error in verifying the user || Invalid token sequence",
+      error
+    );
+    res.status(401).send();
+  }
+};
+
+async function checkVerified(userDetail) {
+  return userDetail.verify;
+}
+
+module.exports = { get, post, put, all, head, verifyUser };

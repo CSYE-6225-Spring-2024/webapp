@@ -4,6 +4,8 @@ const router = express.Router();
 
 router.route("/").post(authenticate.post).all(authenticate.all);
 
+router.route("/verify").get(authenticate.verifyUser);
+
 router
   .route("/self")
   .head(authenticate.head)

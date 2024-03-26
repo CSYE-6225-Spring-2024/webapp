@@ -125,7 +125,7 @@ const put = async (req, res) => {
         const isVerified = await checkVerified(userDetail);
         if (!isVerified) {
           res.status(401).send();
-          logger.info("GET REQ: Request blocked as user not verified");
+          logger.info("PUT REQ: Request blocked as user not verified");
           return;
         }
       }

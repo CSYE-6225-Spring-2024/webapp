@@ -1,11 +1,10 @@
 name: Packer Build Image
 on:
-  push
-  # pull_request:
-  #   types:
-  #     - closed
-  #   branches:
-  #     - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
 
 permissions:
   checks: write
@@ -14,7 +13,7 @@ permissions:
 
 jobs:
   build-image:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
       PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}

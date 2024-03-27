@@ -41,7 +41,7 @@ const get = async (req, res) => {
       if (process.env.NODE_ENV == "PRODUCTION") {
         const isVerified = await checkVerified(userDetail);
         if (!isVerified) {
-          res.status(401).send();
+          res.status(403).send();
           logger.info("GET REQ: Request blocked as user not verified");
           return;
         }
@@ -127,7 +127,7 @@ const put = async (req, res) => {
       if (process.env.NODE_ENV === "PRODUCTION") {
         const isVerified = await checkVerified(userDetail);
         if (!isVerified) {
-          res.status(401).send();
+          res.status(403).send();
           logger.info("PUT REQ: Request blocked as user not verified");
           return;
         }
@@ -174,7 +174,7 @@ const verifyUser = async (req, res) => {
     const token = req.query.token;
     if (!token) {
       logger.info("Token unavailable for the request");
-      res.status(401).send();
+      res.status(403).send();
       return;
     }
     const userDetail = await UserVerified.findOne({
@@ -187,7 +187,7 @@ const verifyUser = async (req, res) => {
       logger.info("The link is expired for username:", {
         username: userDetail.username,
       });
-      res.status(401).send();
+      res.status(403).send();
       return;
     }
 
@@ -221,7 +221,7 @@ const verifyUser = async (req, res) => {
       "Token expired || Error in verifying the user || Invalid token sequence",
       error
     );
-    res.status(401).send();
+    res.status(403).send();
   }
 };
 

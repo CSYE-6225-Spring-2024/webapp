@@ -201,7 +201,7 @@ const verifyUser = async (req, res) => {
         logger.info("Success in verifying the username", {
           username: username,
         });
-        await userDetail.update({ email_verified_time: currTime });
+        await userDetail.update({ email_verified_time: Date.now() });
       } else {
         logger.info("Failed to fetch user details using username", {
           username: username,

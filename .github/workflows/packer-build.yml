@@ -50,7 +50,7 @@ jobs:
           echo "::set-output name=image_id::$PKR_IMAGE_ID"
       - name: Test to make a template
         run: |
-          gcloud compute instance-templates create testing-phase2 \
+          gcloud compute instance-templates create testing-phase3 \
           --machine-type=e2-standard-2 \
           --boot-disk-size=100GB \
           --boot-disk-type=pd-balanced \

@@ -46,7 +46,6 @@ jobs:
         id: get_img_id
         run: |
           cd packer-setup/builds
-          packer build build.pkr.hcl
           PKR_IMAGE_ID=$(packer build -machine-readable build.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
           echo "::set-output name=image_id::$PKR_IMAGE_ID"
       - name: Test to make a template

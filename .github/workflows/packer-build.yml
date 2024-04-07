@@ -73,15 +73,6 @@ jobs:
           --instance-template-region=us-east1
       - name: Attach new template to MIG
         run: |
-          gcloud projects add-iam-policy-binding csye6225-anirban-002979520 \
-          --member="serviceAccount:service-698091522680@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
-          --role="roles/compute.loadBalancerAdmin" --quiet
-          gcloud projects add-iam-policy-binding csye6225-anirban-002979520 \
-          --member="serviceAccount:testing-github@csye6225-anirban-002979520.iam.gserviceaccount.com" \
-          --role="roles/iam.serviceAccountUser"
-          gcloud projects add-iam-policy-binding csye6225-anirban-002979520 \
-          --member="serviceAccount:testing-github@csye6225-anirban-002979520.iam.gserviceaccount.com" \
-          --role="roles/iam.policyAdmin"
           gcloud compute instance-groups managed set-instance-template \
           webapp-mig \
           --template=projects/csye6225-anirban-002979520/regions/us-east1/instanceTemplates/testing-phase \

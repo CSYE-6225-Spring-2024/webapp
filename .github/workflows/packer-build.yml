@@ -75,7 +75,7 @@ jobs:
         run: |
           gcloud projects add-iam-policy-binding csye6225-anirban-002979520 \
           --member="serviceAccount:service-698091522680@gcp-sa-cloudbuild.iam.gserviceaccount.com" \
-          --role="roles/compute.loadBalancerAdmin" 
+          --role="roles/compute.loadBalancerAdmin" --quiet
 
           gcloud compute instance-groups managed set-instance-template \
           webapp-mig \

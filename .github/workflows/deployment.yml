@@ -1,0 +1,71 @@
+name: GCP Deployment
+on:
+  workflow_run:
+    workflows: ["Packer Build Image"]
+    types:
+      - "completed"
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - main
+
+permissions:
+  checks: write
+  actions: read
+  contents: read
+
+jobs:
+  build-image:
+    # if: github.event.pull_request.merged == true
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Configure GCP
+        uses: "google-github-actions/auth@v2"
+        with:
+          credentials_json: "${{ secrets.DEV_GCP_SERVICE_IAM }}"
+      - name: Set up Cloud SDK
+        uses: "google-github-actions/setup-gcloud@v2"
+      - name: Test to make a template
+        run: |
+          gcloud compute instance-templates create testing-phase4 \
+          --machine-type=e2-standard-2 \
+          --boot-disk-size=100GB \
+          --boot-disk-type=pd-balanced \
+          --image=${{ github.event.workflow_run.outputs.output_ID }} \
+          --tags=webapp-instance \
+          --network-interface=network=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/global/networks/cloud-test-webapp-vpc,subnet=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/regions/us-east1/subnetworks/webapp,network-tier=STANDARD \
+          --service-account=csye6225-cloud@csye6225-anirban-002979520.iam.gserviceaccount.com \
+          --scopes=logging-write,monitoring-write,pubsub,cloud-platform \
+          --metadata=startup-script="#/bin/bash
+          cd /opt/webapp/
+          if [ -e .env ]; then
+            sudo rm .env
+          fi
+          sudo tee -a .env <<EOF >/dev/null
+          DB_NAME=webapp
+          DB_PWD=rhxhabwhkp
+          DB_USER=webapp
+          DB_HOST=10.1.20.63
+          WEB_PORT=8080
+          DB_PORT=5432
+          NODE_ENV=PRODUCTION
+          EMAIL_EXPIRY=2
+          EOF
+          sudo chown csye6225:csye6225 .env
+          " \
+          --instance-template-region=us-east1
+      - name: Attach new template to MIG
+        run: |
+          gcloud compute instance-groups managed set-instance-template \
+          webapp-mig \
+          --template=projects/csye6225-anirban-002979520/regions/us-east1/instanceTemplates/testing-phase4 \
+          --region=us-east1
+      - name: Rolling action update instances
+        run: |
+          gcloud compute instance-groups managed rolling-action replace webapp-mig --region=us-east1 --replacement-method=recreate --max-surge=0
+      - name: Wait until instance groups are --stable
+        run: |
+          gcloud compute instance-groups managed wait-until --stable webapp-mig --region=us-east1

@@ -44,7 +44,7 @@ jobs:
           packer init build.pkr.hcl
       - name: Test to make a template
         run: |
-          gcloud compute instance-templates create testing-phase \
+          gcloud compute instance-templates create testing-phase2 \
           --machine-type=e2-standard-2 \
           --boot-disk-size=100GB \
           --boot-disk-type=pd-balanced \
@@ -75,11 +75,12 @@ jobs:
         run: |
           gcloud compute instance-groups managed set-instance-template \
           webapp-mig \
-          --template=projects/csye6225-anirban-002979520/regions/us-east1/instanceTemplates/testing-phase \
+          --template=projects/csye6225-anirban-002979520/regions/us-east1/instanceTemplates/testing-phase2 \
           --region=us-east1
       - name: Rolling action update instances
         run: |
           gcloud compute instance-groups managed rolling-action replace webapp-mig --region=us-east1 --replacement-method=recreate --max-surge=0
+          gcloud compute instance-groups managed wait-until --stable webapp-mig --region=us-east1
       # - name: Build packer Image
       #   run: |
       #     cd packer-setup/builds

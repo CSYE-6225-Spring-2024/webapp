@@ -44,7 +44,7 @@ jobs:
           packer init build.pkr.hcl
       - name: Test to make a template
         run: |
-          gcloud compute instance-templates create testingTemplate \
+          gcloud compute instance-templates create testing-template \
           --machine-type=e2-standard-2 \
           --boot-disk-size=100GB \
           --boot-disk-type=pd-balanced \

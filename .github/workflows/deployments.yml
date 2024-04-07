@@ -1,9 +1,6 @@
-name: GCP Deployment
+name: Packer Build Image
 on:
-  workflow_run:
-    workflows: ["Packer Build Image"]
-    types:
-      - "completed"
+  [push]
   # pull_request:
   #   types:
   #     - closed
@@ -19,6 +16,15 @@ jobs:
   build-image:
     # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
+    outputs:
+      output_ID: ${{ steps.get_img_id.outputs.image_id }}
+    env:
+      PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}
+      PKR_SOURCE_IMG_FAM: ${{ vars.PKR_SOURCE_IMG_FAM }}
+      PKR_SSH_USERNAME: ${{ vars.PKR_SSH_USERNAME }}
+      PKR_ZONE: ${{ vars.PKR_ZONE }}
+      PKR_DISK_SIZE: ${{ vars.PKR_DISK_SIZE }}
+      PKR_DISK_TYPE: ${{ vars.PKR_DISK_TYPE }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -28,13 +34,29 @@ jobs:
           credentials_json: "${{ secrets.DEV_GCP_SERVICE_IAM }}"
       - name: Set up Cloud SDK
         uses: "google-github-actions/setup-gcloud@v2"
+      - name: Setup Packer
+        uses: hashicorp/setup-packer@main
+      - name: Zip repository
+        run: |
+          zip -r webapp.zip .
+          mv webapp.zip packer-setup/builds
+      - name: Run `packer init`
+        run: |
+          cd packer-setup/builds
+          packer init build.pkr.hcl
+      - name: Build packer Image
+        id: get_img_id
+        run: |
+          cd packer-setup/builds
+          PKR_IMAGE_ID=$(packer build -machine-readable build.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
+          echo "::set-output name=image_id::$PKR_IMAGE_ID"
       - name: Test to make a template
         run: |
           gcloud compute instance-templates create testing-phase4 \
           --machine-type=e2-standard-2 \
           --boot-disk-size=100GB \
           --boot-disk-type=pd-balanced \
-          --image=${{ github.event.workflow_run.outputs.output_ID }} \
+          --image=${{ steps.get_img_id.outputs.image_id }} \
           --tags=webapp-instance \
           --network-interface=network=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/global/networks/cloud-test-webapp-vpc,subnet=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/regions/us-east1/subnetworks/webapp,network-tier=STANDARD \
           --service-account=csye6225-cloud@csye6225-anirban-002979520.iam.gserviceaccount.com \

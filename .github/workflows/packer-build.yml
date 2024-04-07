@@ -1,10 +1,11 @@
 name: Packer Build Image
 on:
-  pull_request:
-    types:
-      - closed
-    branches:
-      - main
+  [push]
+  # pull_request:
+  #   types:
+  #     - closed
+  #   branches:
+  #     - main
 
 permissions:
   checks: write
@@ -13,7 +14,7 @@ permissions:
 
 jobs:
   build-image:
-    if: github.event.pull_request.merged == true
+    # if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
       PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}
@@ -41,6 +42,35 @@ jobs:
         run: |
           cd packer-setup/builds
           packer init build.pkr.hcl
+      - name: Test to make a template
+        run: |
+          gcloud compute instance-templates create testingTemplate \
+          --machine-type=e2-standard-2 \
+          --boot-disk-size=100GB \
+          --boot-disk-type=pd-balanced \
+          --image=webapp-vm-image-1712153610 \
+          --tags=webapp-instance \
+          --network-interface=network=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/global/networks/cloud-test-webapp-vpc,subnet=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/regions/us-east1/subnetworks/webapp \
+          --service-account=csye6225-cloud@csye6225-anirban-002979520.iam.gserviceaccount.com \
+          --scopes=logging-write,monitoring-write,pubsub,cloud-platform \
+          --metadata=startup-script="#/bin/bash
+          cd /opt/webapp/
+          if [ -e .env ]; then
+            sudo rm .env
+          fi
+          sudo tee -a .env <<EOF >/dev/null
+          DB_NAME=webapp
+          DB_PWD=uijomtmqpd
+          DB_USER=webapp
+          DB_HOST=10.1.20.58
+          WEB_PORT=8080
+          DB_PORT=5432
+          NODE_ENV=PRODUCTION
+          EMAIL_EXPIRY=2
+          EOF
+          sudo chown csye6225:csye6225 .env
+          " \
+          --instance-template-region=us-east1
       - name: Build packer Image
         run: |
           cd packer-setup/builds

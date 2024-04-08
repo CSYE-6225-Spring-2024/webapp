@@ -88,3 +88,4 @@ jobs:
       - name: Wait until instance groups are stable
         run: |
           gcloud compute instance-groups managed wait-until --version-target-reached ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=${{ vars.TIME_OUT }}
+

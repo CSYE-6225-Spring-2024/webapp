@@ -65,7 +65,7 @@ jobs:
           fi
           sudo tee -a .env <<EOF >/dev/null
           DB_NAME=${{ vars.DB_NAME }}
-          DB_PWD=${{ vars.DB_PWD }}
+          DB_PWD=${{ secrets.DB_PWD }}
           DB_USER=${{ vars.DB_USER }}
           DB_HOST=${{ vars.TMP_DB_HOST }}
           WEB_PORT=${{ vars.WEB_PORT }}

@@ -87,4 +87,4 @@ jobs:
           gcloud compute instance-groups managed rolling-action replace ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --replacement-method=recreate --max-surge=0
       - name: Wait until instance groups are stable
         run: |
-          gcloud compute instance-groups managed wait-until --version-target-reached ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=600
+          gcloud compute instance-groups managed wait-until --version-target-reached ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=${{ vars.TIME_OUT }}

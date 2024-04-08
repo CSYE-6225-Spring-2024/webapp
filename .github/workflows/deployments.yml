@@ -1,11 +1,10 @@
 name: Packer Build Image
 on:
-  [push]
-  # pull_request:
-  #   types:
-  #     - closed
-  #   branches:
-  #     - main
+  pull_request:
+    types:
+      - closed
+    branches:
+      - main
 
 permissions:
   checks: write
@@ -14,10 +13,8 @@ permissions:
 
 jobs:
   build-image:
-    # if: github.event.pull_request.merged == true
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
-    outputs:
-      output_ID: ${{ steps.get_img_id.outputs.image_id }}
     env:
       PKR_PROJECT_ID: ${{ vars.PKR_PROJECT_ID }}
       PKR_SOURCE_IMG_FAM: ${{ vars.PKR_SOURCE_IMG_FAM }}
@@ -50,16 +47,16 @@ jobs:
           cd packer-setup/builds
           PKR_IMAGE_ID=$(packer build -machine-readable build.pkr.hcl | awk -F, '$0 ~/artifact,0,id/ {print $6}')
           echo "::set-output name=image_id::$PKR_IMAGE_ID"
-      - name: Test to make a template
+      - name: Template creation for GCP-MIG
         run: |
-          gcloud compute instance-templates create testing-phase4 \
-          --machine-type=e2-standard-2 \
-          --boot-disk-size=100GB \
-          --boot-disk-type=pd-balanced \
+          gcloud compute instance-templates create ${{ vars.INSTANCE_TEMP_NAME }} \
+          --machine-type=${{ vars.MACHINE_TYPE }} \
+          --boot-disk-size=${{ vars.BOOT_DISK_SIZE }} \
+          --boot-disk-type=${{ vars.BOOT_DISK_TYPE }} \
           --image=${{ steps.get_img_id.outputs.image_id }} \
-          --tags=webapp-instance \
-          --network-interface=network=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/global/networks/cloud-test-webapp-vpc,subnet=https://www.googleapis.com/compute/v1/projects/csye6225-anirban-002979520/regions/us-east1/subnetworks/webapp,network-tier=STANDARD \
-          --service-account=csye6225-cloud@csye6225-anirban-002979520.iam.gserviceaccount.com \
+          --tags=${{ vars.TEMPLATE_TAGS }} \
+          --network-interface=network=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/global/networks/${{ vars.VPC_NAME }},subnet=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/subnetworks/${{ vars.WEBAPP_SUBNET }},network-tier=${{ vars.TEMP_NTWK_TIER }} \
+          --service-account=${{ vars.TEMP_SERVICE_ACC }} \
           --scopes=logging-write,monitoring-write,pubsub,cloud-platform \
           --metadata=startup-script="#/bin/bash
           cd /opt/webapp/
@@ -67,27 +64,27 @@ jobs:
             sudo rm .env
           fi
           sudo tee -a .env <<EOF >/dev/null
-          DB_NAME=webapp
-          DB_PWD=rhxhabwhkp
-          DB_USER=webapp
-          DB_HOST=10.1.20.63
-          WEB_PORT=8080
-          DB_PORT=5432
+          DB_NAME=${{ vars.DB_NAME }}
+          DB_PWD=${{ vars.DB_PWD }}
+          DB_USER=${{ vars.DB_USER }}
+          DB_HOST=${{ vars.TMP_DB_HOST }}
+          WEB_PORT=${{ vars.WEB_PORT }}
+          DB_PORT=${{ vars.DB_PORT }}
           NODE_ENV=PRODUCTION
-          EMAIL_EXPIRY=2
+          EMAIL_EXPIRY=${{ vars.TMP_EMAIL_EXP }}
           EOF
           sudo chown csye6225:csye6225 .env
           " \
-          --instance-template-region=us-east1
-      - name: Attach new template to MIG
+          --instance-template-region=${{ vars.REGION }}
+      - name: Attach new template version to MIG
         run: |
           gcloud compute instance-groups managed set-instance-template \
-          webapp-mig \
-          --template=projects/csye6225-anirban-002979520/regions/us-east1/instanceTemplates/testing-phase4 \
-          --region=us-east1
+          ${{ vars.MIG_NAME }} \
+          --template=projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/instanceTemplates/${{ vars.INSTANCE_TEMP_NAME }} \
+          --region=${{ vars.REGION }}
       - name: Rolling action update instances
         run: |
-          gcloud compute instance-groups managed rolling-action replace webapp-mig --region=us-east1 --replacement-method=recreate --max-surge=0
-      - name: Wait until instance groups are --stable
+          gcloud compute instance-groups managed rolling-action replace ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --replacement-method=recreate --max-surge=0
+      - name: Wait until instance groups are stable
         run: |
-          gcloud compute instance-groups managed wait-until --stable webapp-mig --region=us-east1
+          gcloud compute instance-groups managed wait-until --stable ${{ vars.MIG_NAME }} --region=${{ vars.REGION }}

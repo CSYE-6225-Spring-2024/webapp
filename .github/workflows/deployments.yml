@@ -89,7 +89,7 @@ jobs:
         run: |
           gcloud compute instance-groups managed rolling-action start-update ${{ vars.MIG_NAME }} \
           --version=template=projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/instanceTemplates/${{ vars.INSTANCE_TEMP_NAME }} \
-          --region=${{ vars.REGION }} --replacement-method=substitute --max-surge=1
+          --region=${{ vars.REGION }} --replacement-method=substitute
       - name: Wait until instance groups are stable
         run: |
           gcloud compute instance-groups managed wait-until --stable ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=${{ vars.TIME_OUT }}

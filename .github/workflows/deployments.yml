@@ -1,4 +1,4 @@
-name: Packer Build Image
+name: GCP Deployment
 on:
   pull_request:
     types:
@@ -12,7 +12,7 @@ permissions:
   contents: read
 
 jobs:
-  build-image:
+  gcp-deployments:
     if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     env:
@@ -58,6 +58,9 @@ jobs:
           --network-interface=network=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/global/networks/${{ vars.VPC_NAME }},subnet=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/subnetworks/${{ vars.WEBAPP_SUBNET }},network-tier=${{ vars.TEMP_NTWK_TIER }} \
           --service-account=${{ vars.TEMP_SERVICE_ACC }} \
           --scopes=logging-write,monitoring-write,pubsub,cloud-platform \
+          --boot-disk-kms-key=${{ vars.KMS_KEY }} \
+          --boot-disk-kms-keyring=${{ vars.KMS_KEYRING }} \
+          --boot-disk-kms-location=${{ vars.REGION }} \
           --metadata=startup-script="#/bin/bash
           cd /opt/webapp/
           if [ -e .env ]; then
@@ -84,8 +87,7 @@ jobs:
           --region=${{ vars.REGION }}
       - name: Rolling action update instances
         run: |
-          gcloud compute instance-groups managed rolling-action replace ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --replacement-method=recreate --max-surge=0
+          gcloud compute instance-groups managed rolling-action start-update ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --replacement-method=substitute --max-surge=1
       - name: Wait until instance groups are stable
         run: |
           gcloud compute instance-groups managed wait-until --version-target-reached ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=${{ vars.TIME_OUT }}
-

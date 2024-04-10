@@ -31,7 +31,7 @@ app.use((req, res, next) => {
   }
 
   if (
-    !req.originalUrl.startsWith("/v1/user/verify") &&
+    !req.originalUrl.startsWith("/v2/user/verify") &&
     Object.keys(req.query).length != 0
   ) {
     res.status(400).send();

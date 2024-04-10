@@ -58,7 +58,7 @@ jobs:
           --tags=${{ vars.TEMPLATE_TAGS }} \
           --network-interface=network=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/global/networks/${{ vars.VPC_NAME }},subnet=https://www.googleapis.com/compute/v1/projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/subnetworks/${{ vars.WEBAPP_SUBNET }},network-tier=${{ vars.TEMP_NTWK_TIER }} \
           --service-account=${{ vars.TEMP_SERVICE_ACC }} \
-          --scopes=logging-write,monitoring-write,pubsub,cloud-platform \
+          --scopes=logging-write,monitoring-write,pubsub \
           --boot-disk-kms-key=${{ vars.KMS_KEY }} \
           --boot-disk-kms-keyring=${{ vars.KMS_KEYRING }} \
           --boot-disk-kms-location=${{ vars.REGION }} \
@@ -90,7 +90,7 @@ jobs:
         run: |
           gcloud compute instance-groups managed rolling-action start-update ${{ vars.MIG_NAME }} \
           --version=template=projects/${{ vars.PROJECT_ID }}/regions/${{ vars.REGION }}/instanceTemplates/${{ vars.INSTANCE_TEMP_NAME }} \
-          --region=${{ vars.REGION }} --replacement-method=substitute
+          --region=${{ vars.REGION }} --replacement-method=${{ vars.REPLACE_MTHD }}
       - name: Wait until instance groups are stable
         run: |
           gcloud compute instance-groups managed wait-until --stable ${{ vars.MIG_NAME }} --region=${{ vars.REGION }} --timeout=${{ vars.TIME_OUT }}

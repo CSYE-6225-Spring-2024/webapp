@@ -7,7 +7,7 @@ const pubsub = new PubSub({
 
 const publishMesssgePubSub = async (topicName, userDetails) => {
   try {
-    let userDetailsVersioned = { ...userDetails, version: "v1" };
+    let userDetailsVersioned = { ...userDetails, version: "v2" };
     const jsonData = Buffer.from(JSON.stringify(userDetailsVersioned));
     const msgID = await pubsub
       .topic(topicName)

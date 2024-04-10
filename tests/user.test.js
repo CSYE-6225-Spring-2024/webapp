@@ -22,7 +22,7 @@ describe("User creation and check duplication", () => {
       password: "Boston",
       username: "anirbandutta98@gmail.com",
     };
-    const responsePostReq = await request(app).post("/v1/user/").send(userObj);
+    const responsePostReq = await request(app).post("/v2/user/").send(userObj);
     expect(responsePostReq.status).toBe(201);
 
     userId = responsePostReq.body.id;
@@ -32,7 +32,7 @@ describe("User creation and check duplication", () => {
     ).toString("base64");
 
     const responseGetReq = await request(app)
-      .get("/v1/user/self/")
+      .get("/v2/user/self/")
       .set("Authorization", `Basic ${encodedStr}`);
     expect(responseGetReq.status).toBe(200);
     expect(responseGetReq.body.id).toBe(userId);
@@ -44,13 +44,13 @@ describe("User creation and check duplication", () => {
       last_name: "Noida",
     };
     const responsePostReq = await request(app)
-      .put("/v1/user/self/")
+      .put("/v2/user/self/")
       .set("Authorization", `Basic ${encodedStr}`)
       .send(updatedUsrObj);
     expect(responsePostReq.status).toBe(204);
 
     const responseGetReq = await request(app)
-      .get("/v1/user/self/")
+      .get("/v2/user/self/")
       .set("Authorization", `Basic ${encodedStr}`);
     expect(responseGetReq.status).toBe(200);
     expect(responseGetReq.body.id).toBe(userId);

@@ -51,6 +51,7 @@ jobs:
         run: |
           gcloud compute instance-templates create ${{ vars.INSTANCE_TEMP_NAME }} \
           --machine-type=${{ vars.MACHINE_TYPE }} \
+          --boot-disk-auto-delete \
           --boot-disk-size=${{ vars.BOOT_DISK_SIZE }} \
           --boot-disk-type=${{ vars.BOOT_DISK_TYPE }} \
           --image=${{ steps.get_img_id.outputs.image_id }} \
